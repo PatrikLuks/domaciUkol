@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword   # <-- Doplň správně nastavené heslo
+      POSTGRES_DB: recipes
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    image: vabene1111/recipes
+    depends_on:
+      - db
+    environment:
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: recipes
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_HOST: db
+      DB_PORT: 5432
+      SECRET_KEY: "tvoja-tajna-hodnota"   # <-- Nahraď skutečným tajným klíčem
+      POSTGRES_PASSWORD: mypassword       # <-- Musí odpovídat heslu v sekci db
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
